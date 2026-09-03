@@ -1,0 +1,25 @@
+# Профиль — личные данные владельца голоса. В репозиторий пакета не попадает.
+profile/
+/profile
+
+# Рабочий конфиг: в нём пути и ключи проектов конкретного человека.
+voice.config.yaml
+voice.config.yml
+voice.config.json
+
+# Ключи и живые сессии Telegram.
+*.env
+.env
+*.session
+*.session-journal
+
+# Промежуточные выгрузки.
+tools/out/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
