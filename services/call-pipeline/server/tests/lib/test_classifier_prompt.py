@@ -4,7 +4,7 @@ from app.lib.classifier_prompt import build_messages
 def test_build_messages_has_cache_breakpoints():
     msgs = build_messages(
         user_context_summary="Ирина, руководитель студии",
-        projects=[{"key": "mz", "name": "MZ", "description": "tracking"}],
+        projects=[{"key": "demo-crm", "name": "Demo CRM", "description": "tracking"}],
         transcript_text="Привет, как дела",
     )
     sys = msgs["system"]

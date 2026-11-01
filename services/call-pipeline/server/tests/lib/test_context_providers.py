@@ -335,7 +335,7 @@ async def test_fetch_context_degrades_on_mcp_connect_error(frozen_now):
                 "mionika_oauth_expires_at": _FAR_FUTURE,
                 "mionika_oauth_client_id": "c",
                 "mionika_oauth_token_endpoint": "https://x/oauth/token",
-                "mionika_active_project_keys": ["mz"],
+                "mionika_active_project_keys": ["demo-crm"],
             },
         )
     assert ctx["projects"] == []

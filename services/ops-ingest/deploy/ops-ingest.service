@@ -1,0 +1,17 @@
+[Unit]
+Description=ops-ingest — поллер call-pipeline: звонки в очередь приёмки (в граф не пишет)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ops-ingest/ingest
+EnvironmentFile=/opt/ops-ingest/ingest/.env
+Environment=PYTHONPATH=/opt/ops-ingest/ingest
+Environment=PYTHONUTF8=1
+ExecStart=/opt/ops-ingest/ingest/.venv/bin/python -m ops_ingest.run
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

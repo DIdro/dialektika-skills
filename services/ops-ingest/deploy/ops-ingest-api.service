@@ -1,0 +1,17 @@
+[Unit]
+Description=ops-ingest-api — HTTP-очередь приёмки звонков (читает ту же SQLite, что и поллер)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ops-ingest/ingest
+EnvironmentFile=/opt/ops-ingest/ingest/.env
+Environment=PYTHONPATH=/opt/ops-ingest/ingest
+Environment=PYTHONUTF8=1
+ExecStart=/opt/ops-ingest/ingest/.venv/bin/uvicorn ops_ingest.asgi:app --host 127.0.0.1 --port 8002
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
