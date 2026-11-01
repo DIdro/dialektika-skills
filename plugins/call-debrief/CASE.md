@@ -46,8 +46,8 @@
   Python, SQLite для состояния.
 
 В репозитории три части. Скил `call-debrief` — разбор и приёмка в чате: ставится одной командой и
-работает без сервера. Сервис [`services/call-pipeline`](../../services/call-pipeline) — транскрибация,
-диаризация, запись Телемоста и веб-кабинет. Сервис [`services/ops-ingest`](../../services/ops-ingest) —
+работает без сервера. Сервис [`call-pipeline`](call-pipeline) — транскрибация,
+диаризация, запись Телемоста и веб-кабинет. Сервис [`ops-ingest`](ops-ingest) —
 очередь приёмки и запись принятого в Мионику, а без неё в файлы.
 
 ## Путь и эффект
@@ -85,8 +85,8 @@
 
 **Что нужно для запуска:** Claude Code и 15 минут (см. `README.md`), свой список проектов в
 `context/projects.md`, своё имя в `context/me.md`. Для своего конвейера дополнительно: сервер
-под [`services/call-pipeline`](../../services/call-pipeline) и
-[`services/ops-ingest`](../../services/ops-ingest).
+под [`call-pipeline`](call-pipeline) и
+[`ops-ingest`](ops-ingest).
 
 **Ограничения:**
 - Без разметки говорящих атрибуция «кто что обещал» заметно хуже.
