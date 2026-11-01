@@ -37,13 +37,13 @@ def test_system_includes_user_context():
 def test_system_includes_projects_snapshot():
     msgs = build_messages(
         user_context_summary="x",
-        projects=[{"key": "mz-tracking", "name": "MZ Tracking",
+        projects=[{"key": "demo-crm", "name": "Demo CRM",
                    "description": "trekking"}],
         transcript_text="t",
     )
     text_blocks = [b["text"] for b in msgs["system"]]
     joined = " ".join(text_blocks)
-    assert "mz-tracking" in joined
+    assert "demo-crm" in joined
 
 
 def test_system_instructions_route_through_submit_draft_tool():

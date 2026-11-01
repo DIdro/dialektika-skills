@@ -49,12 +49,15 @@ def test_admin_add_user_with_options(tmp_path, monkeypatch):
     )
     r = CliRunner().invoke(main, [
         "admin", "add-user", "--name", "Irina",
+        "--mionika-token", "mio-secret",
+        "--projects", "bot,crm",
         "--context", "Irina leads the studio projects",
     ])
     assert r.exit_code == 0
     assert route.called
     body = route.calls.last.request.read().decode()
-    # JSON body should contain the context
+    # JSON body should contain the projects list and context
+    assert "bot" in body
     assert "Irina leads the studio projects" in body
 
 

@@ -23,6 +23,8 @@ def require_admin(x_admin_token: Annotated[str | None, Header()] = None):
 
 class CreateUserBody(BaseModel):
     name: str
+    mionika_read_token: str | None = None
+    mionika_active_project_keys: list[str] = []
     context_summary: str | None = None
     system_prompt_override: str | None = None
 
@@ -34,6 +36,9 @@ def add_user(body: CreateUserBody, db: Annotated[Session, Depends(get_db)]):
     bearer = secrets.token_urlsafe(32)
     u = User(
         id=uid, name=body.name, bearer_token=bearer,
+        mionika_read_token=encryption.encrypt(body.mionika_read_token)
+            if body.mionika_read_token else None,
+        mionika_active_project_keys=json.dumps(body.mionika_active_project_keys),
         context_summary=body.context_summary,
         system_prompt_override=body.system_prompt_override,
     )
@@ -52,6 +57,30 @@ def rotate_token(user_id: str, db: Annotated[Session, Depends(get_db)]):
     u.bearer_token = new
     db.commit()
     return {"bearer_token": new}
+
+
+class MionikaTokensBody(BaseModel):
+    access_token: str
+    refresh_token: str
+    expires_at: int                # unix epoch ms
+    client_id: str
+    token_endpoint: str            # e.g. https://mionika.ryefield.com/oauth/token
+
+
+@router.post("/users/{user_id}/mionika-tokens",
+             dependencies=[Depends(require_admin)])
+def set_mionika_tokens(user_id: str, body: MionikaTokensBody,
+                        db: Annotated[Session, Depends(get_db)]):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(404, "user not found")
+    u.mionika_oauth_access_token = encryption.encrypt(body.access_token)
+    u.mionika_oauth_refresh_token = encryption.encrypt(body.refresh_token)
+    u.mionika_oauth_expires_at = body.expires_at
+    u.mionika_oauth_client_id = body.client_id
+    u.mionika_oauth_token_endpoint = body.token_endpoint
+    db.commit()
+    return {"ok": True, "expires_at": body.expires_at}
 
 
 @router.get("/disk-status", dependencies=[Depends(require_admin)])

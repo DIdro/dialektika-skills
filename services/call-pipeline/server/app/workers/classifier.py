@@ -9,9 +9,10 @@ from sqlalchemy.orm import Session
 from ..db import queries as q
 from ..db import session as session_mod
 from ..db.models import Job, User
-from ..lib import storage
+from ..lib import encryption, storage
 from ..lib.classifier_prompt import build_messages
 from ..lib.context_providers.file import FileProvider
+from ..lib.context_providers.mionika import MionikaProvider
 from ..lib.draft_schema import Draft, Uncertainty
 from ._common import fail_job
 
@@ -27,10 +28,46 @@ def _client() -> AsyncAnthropic:
 
 
 def _user_config_from_row(user: User) -> dict:
+    # `mionika_read_token` is a static long-lived bearer. When set it takes
+    # precedence over OAuth in MionikaProvider and sidesteps refresh-token
+    # rotation/revocation entirely — the failure mode that silently emptied
+    # the project list for days. OAuth fields remain the fallback.
     return {
+        "mionika_read_token": (
+            encryption.decrypt(user.mionika_read_token)
+            if user.mionika_read_token else None
+        ),
+        "mionika_oauth_access_token": (
+            encryption.decrypt(user.mionika_oauth_access_token)
+            if user.mionika_oauth_access_token else None
+        ),
+        "mionika_oauth_refresh_token": (
+            encryption.decrypt(user.mionika_oauth_refresh_token)
+            if user.mionika_oauth_refresh_token else None
+        ),
+        "mionika_oauth_expires_at": user.mionika_oauth_expires_at,
+        "mionika_oauth_client_id": user.mionika_oauth_client_id,
+        "mionika_oauth_token_endpoint": user.mionika_oauth_token_endpoint,
+        "mionika_active_project_keys": json.loads(
+            user.mionika_active_project_keys or "[]"
+        ),
         "context_summary": user.context_summary or "",
         "system_prompt_override": user.system_prompt_override,
     }
+
+
+def _persist_refreshed_tokens(s: Session, user: User, new_tokens: dict) -> None:
+    """Re-encrypt and persist the new access/refresh/expires triple back
+    to the User row. Called by MionikaProvider via the on_refresh
+    callback when the access token was refreshed mid-fetch.
+    """
+    u = s.get(User, user.id)
+    if u is None:
+        return
+    u.mionika_oauth_access_token = encryption.encrypt(new_tokens["access_token"])
+    u.mionika_oauth_refresh_token = encryption.encrypt(new_tokens["refresh_token"])
+    u.mionika_oauth_expires_at = int(new_tokens["expires_at"])
+    s.commit()
 
 
 def _extract_tool_input(content_blocks) -> dict:
@@ -59,10 +96,17 @@ async def process_one() -> bool:
                 open(job.transcript_path, encoding="utf-8").read()
             )
 
-            provider = FileProvider()
+            provider = MionikaProvider()
             context = {"projects": []}
             if provider.is_available(user_cfg):
-                context = await provider.fetch_context(transcript_data["text"], user_cfg)
+                context = await provider.fetch_context(
+                    transcript_data["text"],
+                    user_cfg,
+                    on_refresh=lambda new_tokens:
+                        _persist_refreshed_tokens(s, user, new_tokens),
+                )
+            elif FileProvider().is_available(user_cfg):
+                context = await FileProvider().fetch_context(transcript_data["text"], user_cfg)
 
             payload = build_messages(
                 user_context_summary=user_cfg["context_summary"],

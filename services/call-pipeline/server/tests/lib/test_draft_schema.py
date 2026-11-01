@@ -6,7 +6,7 @@ from app.lib.draft_schema import Draft, KnowledgeAction
 def test_round_trip():
     d = Draft(
         summary="Trekking call",
-        primary_project={"key": "mz-tracking", "confidence": 0.9, "rationale": "..."},
+        primary_project={"key": "demo-crm", "confidence": 0.9, "rationale": "..."},
         alternative_projects=[],
         uncertainty=None,
         actions=[

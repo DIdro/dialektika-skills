@@ -9,9 +9,16 @@ from app.workers.classifier import process_one
 
 @pytest.fixture
 def setup_transcribed(client, tmp_path):
+    from app.lib import encryption
     s = Session(session_mod.engine)
     s.add(User(
         id="u", name="Ирина", bearer_token="t",
+        mionika_oauth_access_token=encryption.encrypt("ACCESS_TOKEN"),
+        mionika_oauth_refresh_token=encryption.encrypt("REFRESH_TOKEN"),
+        mionika_oauth_expires_at=9_999_999_999_999,  # far future
+        mionika_oauth_client_id="client-1",
+        mionika_oauth_token_endpoint="https://mionika.ryefield.com/oauth/token",
+        mionika_active_project_keys=json.dumps(["bot"]),
         context_summary="Ирина, руководитель студии",
     ))
     s.commit()
@@ -55,7 +62,7 @@ async def test_process_one_writes_draft(setup_transcribed):
         content=[_tool_use_block(fake_draft)]
     ))
     with patch("app.workers.classifier._client", return_value=fake_anthropic), \
-         patch("app.workers.classifier.FileProvider") as MP:
+         patch("app.workers.classifier.MionikaProvider") as MP:
         MP.return_value.is_available.return_value = True
         MP.return_value.fetch_context = AsyncMock(return_value={
             "projects": [{"key": "bot", "name": "Bot", "description": "x"}]
@@ -92,7 +99,7 @@ async def test_classifier_uses_tool_use(setup_transcribed):
         content=[_tool_use_block(fake_draft)]
     ))
     with patch("app.workers.classifier._client", return_value=fake_anthropic), \
-         patch("app.workers.classifier.FileProvider") as MP:
+         patch("app.workers.classifier.MionikaProvider") as MP:
         MP.return_value.is_available.return_value = False
         MP.return_value.fetch_context = AsyncMock(return_value={"projects": []})
         ok = await process_one()

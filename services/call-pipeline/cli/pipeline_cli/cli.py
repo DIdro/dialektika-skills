@@ -1,7 +1,7 @@
 import click
 from .commands import (upload, list_cmd, show_cmd, skip_cmd, retry_cmd, status_cmd,
                        watch, record, recordings_cmd, record_stop, record_transcript)
-from .commands.admin import add_user, rotate_token, disk_status, tail_logs
+from .commands.admin import add_user, rotate_token, disk_status, tail_logs, sync_mionika_tokens
 
 
 @click.group()
@@ -32,3 +32,4 @@ admin.add_command(add_user.add_user)
 admin.add_command(rotate_token.rotate_token)
 admin.add_command(disk_status.disk_status)
 admin.add_command(tail_logs.tail_logs)
+admin.add_command(sync_mionika_tokens.sync_mionika_tokens)

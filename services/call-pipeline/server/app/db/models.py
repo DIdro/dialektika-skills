@@ -18,6 +18,16 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     # Deprecated — kept for backward compat with old DBs. Replaced by the
+    # mionika_oauth_* fields below (per-user OAuth credentials).
+    mionika_read_token: Mapped[str | None] = mapped_column(Text)
+    # Mionika OAuth credentials (per-user, multi-tenant). Synced via
+    # `pipeline admin sync-mionika-tokens` from the user's local Code creds.
+    mionika_oauth_access_token: Mapped[str | None] = mapped_column(Text)     # encrypted at-rest
+    mionika_oauth_refresh_token: Mapped[str | None] = mapped_column(Text)    # encrypted at-rest
+    mionika_oauth_expires_at: Mapped[int | None] = mapped_column(Integer)    # unix epoch ms
+    mionika_oauth_client_id: Mapped[str | None] = mapped_column(String)
+    mionika_oauth_token_endpoint: Mapped[str | None] = mapped_column(String)
+    mionika_active_project_keys: Mapped[str | None] = mapped_column(Text)    # JSON array
     context_summary: Mapped[str | None] = mapped_column(Text)
     system_prompt_override: Mapped[str | None] = mapped_column(Text)
     rate_limit_overrides: Mapped[str | None] = mapped_column(Text)           # JSON

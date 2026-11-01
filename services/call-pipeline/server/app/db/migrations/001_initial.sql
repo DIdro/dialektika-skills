@@ -11,6 +11,8 @@ CREATE TABLE users (
 	id VARCHAR NOT NULL, 
 	name VARCHAR NOT NULL, 
 	bearer_token VARCHAR NOT NULL, 
+	mionika_read_token TEXT, 
+	mionika_active_project_keys TEXT, 
 	context_summary TEXT, 
 	system_prompt_override TEXT, 
 	rate_limit_overrides TEXT, 
