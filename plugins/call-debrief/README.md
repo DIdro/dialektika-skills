@@ -33,7 +33,7 @@ API-ключом.
 
 1. **Установить** (2 мин). В Claude Code:
    ```
-   /plugin marketplace add DIdro/dialektika-skills
+   /plugin marketplace add https://github.com/DIdro/dialektika-skills.git
    /plugin install call-debrief@dialektika
    /reload-plugins
    ```

@@ -7,7 +7,7 @@
 В Claude Code выполните три команды:
 
 ```
-/plugin marketplace add DIdro/dialektika-skills
+/plugin marketplace add https://github.com/DIdro/dialektika-skills.git
 /plugin install sdm@dialektika
 /plugin install voice@dialektika
 /plugin install speaker-venues@dialektika
