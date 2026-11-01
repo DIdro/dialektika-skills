@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "debrief.schema.json",
+  "title": "Разбор звонка",
+  "description": "Выход скила call-debrief. Через API отдавайте эту схему как input_schema единственного инструмента с принудительным вызовом.",
+  "type": "object",
+  "required": ["summary", "commitments", "atoms"],
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["what"],
+      "properties": {
+        "what": { "type": "string", "description": "Обязательство / задача / решение одной строкой." },
+        "who": { "type": ["string", "null"], "description": "Контрагент или исполнитель." },
+        "deadline": { "type": ["string", "null"], "description": "Названный или подразумеваемый срок." },
+        "quote": { "type": ["string", "null"], "description": "Короткий подтверждающий момент." }
+      }
+    },
+    "project_guess": {
+      "type": "object",
+      "required": ["key", "confidence", "rationale"],
+      "properties": {
+        "key": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rationale": { "type": "string" }
+      }
+    }
+  },
+  "properties": {
+    "call_id": { "type": "string" },
+    "call_date": { "type": ["string", "null"] },
+    "participants": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string", "description": "Сводка для владельца, от третьего лица." },
+    "client_summary": { "type": ["string", "null"], "description": "Сообщение участнику от первого лица владельца; null для внутренних звонков." },
+    "owner_identified": { "type": ["boolean", "null"] },
+    "commitments": {
+      "type": "object",
+      "properties": {
+        "by_me": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "owed_to_me": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "delegations": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "decisions_pending": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "deadlines": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "soft_offers": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+      }
+    },
+    "atoms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "text"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["decision", "risk", "roadmap", "value", "note"] },
+          "text": { "type": "string" },
+          "quote": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "primary_project": { "oneOf": [{ "$ref": "#/$defs/project_guess" }, { "type": "null" }] },
+    "alternative_projects": { "type": "array", "items": { "$ref": "#/$defs/project_guess" } },
+    "uncertainty": {
+      "type": ["object", "null"],
+      "properties": {
+        "description": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "review": {
+      "type": "object",
+      "description": "Заполняется при приёмке, не моделью.",
+      "properties": {
+        "status": { "type": "string", "enum": ["proposed", "accepted", "rejected"] },
+        "reparse_count": { "type": "integer", "minimum": 0 },
+        "reparse_hints": { "type": "array", "items": { "type": "string" } },
+        "reject_reason": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

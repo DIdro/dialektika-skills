@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "atom.schema.json",
+  "title": "Атом знаний из звонка",
+  "description": "Минимальная единица, которую разбор кладёт в базу знаний: одна мысль, один тип, ссылка на источник. Формат не привязан к конкретной базе — ложится в Notion, Obsidian, вики или граф.",
+  "type": "object",
+  "required": ["kind", "text", "source"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["decision", "risk", "roadmap", "value", "note", "task"],
+      "description": "decision — решили; risk — может пойти не так; roadmap — сдвиг сроков/этапов; value — что важно клиенту/бизнесу; note — факт для контекста; task — действие в будущем с исполнителем."
+    },
+    "text": {
+      "type": "string",
+      "description": "1–2 предложения, понятные без транскрипта."
+    },
+    "quote": {
+      "type": ["string", "null"],
+      "description": "Короткая цитата из разговора, на которой стоит атом."
+    },
+    "project": {
+      "type": ["string", "null"],
+      "description": "Ключ проекта из вашего списка; null — не определён, решает человек при приёмке."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "accepted", "rejected"],
+      "default": "proposed",
+      "description": "proposed — черновик разбора; accepted — человек принял звонок; rejected — отклонил. В базу попадает только accepted."
+    },
+    "task": {
+      "type": ["object", "null"],
+      "description": "Только для kind=task.",
+      "properties": {
+        "bucket": {
+          "type": "string",
+          "enum": ["by_me", "owed_to_me", "delegations", "decisions_pending", "deadlines", "soft_offers"]
+        },
+        "who": { "type": ["string", "null"], "description": "Контрагент или исполнитель." },
+        "deadline": { "type": ["string", "null"], "description": "Срок, как назван в разговоре, или ISO-дата." }
+      },
+      "required": ["bucket"]
+    },
+    "source": {
+      "type": "object",
+      "required": ["call_id"],
+      "properties": {
+        "call_id": { "type": "string", "description": "Идентификатор звонка (имя файла, дата+слаг)." },
+        "call_date": { "type": ["string", "null"], "description": "YYYY-MM-DD" },
+        "participants": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "additionalProperties": false
+}

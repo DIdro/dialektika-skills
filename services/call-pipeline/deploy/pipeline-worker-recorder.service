@@ -1,0 +1,24 @@
+[Unit]
+Description=call-pipeline worker-recorder (API/agent-launched Telemost recordings)
+After=network.target pipeline-api.service
+
+[Service]
+Type=simple
+User=pipeline
+WorkingDirectory=/opt/call-pipeline/server
+EnvironmentFile=/etc/call-pipeline/env
+# pipeline is a system user with no home; give Pulse/Xvfb/Chromium a writable
+# HOME + runtime dir, and point Playwright at a browsers dir it can read.
+# No fixed DISPLAY/PULSE_SINK here — the worker assigns one per recording for
+# concurrency (:101, :102, ... and rec_<id> sinks).
+Environment=HOME=/var/lib/call-pipeline/telemost
+Environment=XDG_RUNTIME_DIR=/var/lib/call-pipeline/telemost/run
+Environment=OUTPUT_DIR=/var/lib/call-pipeline/telemost/recordings
+Environment=PLAYWRIGHT_BROWSERS_PATH=/var/lib/call-pipeline/ms-playwright
+Environment=RECORDER_MAX_CONCURRENT=3
+ExecStart=/opt/call-pipeline/server/.venv/bin/python -m app.workers.recording_runner
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

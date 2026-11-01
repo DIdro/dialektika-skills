@@ -1,0 +1,32 @@
+[project]
+name = "call-pipeline-server"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "python-multipart>=0.0.12",
+    "cryptography>=43",
+    "faster-whisper>=1.0",
+    "pyannote.audio>=4",
+    "anthropic>=0.40",
+    "httpx>=0.28",
+    "python-telegram-bot>=21",
+    "openai>=1.50",
+    "playwright>=1.40",
+    "bcrypt>=4",
+    "itsdangerous>=2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "pytest-mock>=3.14", "ruff>=0.7"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]

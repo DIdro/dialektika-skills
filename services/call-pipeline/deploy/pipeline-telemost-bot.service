@@ -1,0 +1,23 @@
+[Unit]
+Description=call-pipeline Telemost recorder + control bot
+After=network.target pipeline-api.service
+
+[Service]
+Type=simple
+User=pipeline
+WorkingDirectory=/opt/call-pipeline/server
+EnvironmentFile=/etc/call-pipeline/env
+# pipeline is a system user with no home; give Pulse/Xvfb/Chromium a writable
+# HOME + runtime dir, and point Playwright at a browsers dir it can read.
+Environment=HOME=/var/lib/call-pipeline/telemost
+Environment=XDG_RUNTIME_DIR=/var/lib/call-pipeline/telemost/run
+Environment=DISPLAY=:99
+Environment=PULSE_SINK=telemost_sink
+Environment=OUTPUT_DIR=/var/lib/call-pipeline/telemost/recordings
+Environment=PLAYWRIGHT_BROWSERS_PATH=/var/lib/call-pipeline/ms-playwright
+ExecStart=/opt/call-pipeline/server/.venv/bin/python -m app.telemost.control_bot
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

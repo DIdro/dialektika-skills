@@ -1,0 +1,9 @@
+[Unit]
+Description=call-pipeline disk monitor (oneshot)
+
+[Service]
+Type=oneshot
+User=pipeline
+WorkingDirectory=/opt/call-pipeline/server
+EnvironmentFile=/etc/call-pipeline/env
+ExecStart=/opt/call-pipeline/server/.venv/bin/python -m app.workers.disk_monitor

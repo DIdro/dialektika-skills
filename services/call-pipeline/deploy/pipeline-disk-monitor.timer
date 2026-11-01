@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily disk-monitor for call-pipeline
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

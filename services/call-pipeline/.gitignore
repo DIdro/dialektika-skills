@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+.tox/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+venv/
+.venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project-specific
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Local data — никогда не комитим
+/data/
+/var/
+/storage/
+audio/
+transcripts/
+drafts/
+*.log
+*.opus
+*.ogg
+*.mp3
+*.mp4
+*.m4a
+*.wav
+*.webm
+*.mkv
+
+# Local config с секретами
+config.toml
+config.local.toml
+.env
+.env.local
+*.key
+*.pem
+secrets/
+
+# Whisper / pyannote model caches (если кто-то локально гоняет)
+.cache/
+models/

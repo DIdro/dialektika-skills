@@ -1,0 +1,229 @@
+:root {
+  --ink: #17181C;
+  --ink-soft: #5B5F66;
+  --ink-faint: #8A8F98;
+  --paper: #F7F7F4;
+  --surface: #FFFFFF;
+  --line: #E7E7E1;
+  --line-soft: #F0F0EB;
+  --accent: #3B2FE0;
+  --accent-ink: #2A20B8;
+  --accent-wash: #ECEAFB;
+  --live: #E5484D;
+  --done: #2F9E44;
+  --warn: #B8860B;
+
+  --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow-1: 0 1px 2px rgba(20,20,25,.04), 0 1px 3px rgba(20,20,25,.06);
+  --shadow-2: 0 4px 16px rgba(20,20,25,.08);
+
+  --s0: #4F46E5; --s1: #0D9488; --s2: #D97706;
+  --s3: #E11D48; --s4: #7C3AED; --s5: #0284C7;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font: 15px/1.55 var(--font-ui);
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3 { margin: 0; font-weight: 650; letter-spacing: -0.02em; }
+h2 { font-size: 22px; }
+.muted { color: var(--ink-faint); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ── controls ───────────────────────────────────────── */
+input, select, button, textarea {
+  font: inherit;
+  color: var(--ink);
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+button { cursor: pointer; border: 0; }
+button:disabled { opacity: .55; cursor: default; }
+.btn, button.btn {
+  background: var(--accent); color: #fff; font-weight: 550;
+  padding: 9px 16px; border-radius: var(--radius-sm);
+}
+.btn:hover:not(:disabled) { background: var(--accent-ink); }
+.secondary {
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); padding: 7px 12px; border-radius: var(--radius-sm);
+}
+.secondary:hover:not(:disabled) { border-color: var(--ink-faint); }
+.ghost { background: transparent; color: var(--ink-soft); padding: 6px 10px; }
+.ghost:hover { color: var(--ink); }
+.danger { color: var(--live); }
+
+/* ── layout shell ───────────────────────────────────── */
+.shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100%; }
+.sidebar {
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--line); background: var(--surface); padding: 18px 14px;
+}
+.brand {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 700; letter-spacing: -0.02em; font-size: 16px; padding: 4px 8px 18px;
+}
+.brand-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 15px; }
+.brand-eq i {
+  width: 3px; background: var(--accent); border-radius: 2px;
+  animation: eq 1.1s ease-in-out infinite;
+}
+.brand-eq i:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.brand-eq i:nth-child(2) { height: 13px; animation-delay: .15s; }
+.brand-eq i:nth-child(3) { height: 9px;  animation-delay: .3s; }
+.brand-eq i:nth-child(4) { height: 15px; animation-delay: .45s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar nav a {
+  color: var(--ink-soft); padding: 9px 11px; border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+.sidebar nav a:hover { background: var(--line-soft); text-decoration: none; color: var(--ink); }
+.sidebar nav a.active { background: var(--accent-wash); color: var(--accent-ink); }
+.sidebar-foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); }
+.who { padding: 4px 8px 10px; }
+.who-name { font-weight: 550; }
+.who-mail { font-size: 12px; }
+
+main { padding: 32px 40px; max-width: 1000px; width: 100%; }
+main > h2 { margin-bottom: 20px; }
+
+/* Страница «Разбор» — таблица на девять колонок; общий кап 1000px заставлял её
+   прокручиваться горизонтально даже там, где места вдоволь. Кап снимается
+   только для неё; на страницах с текстом он остаётся — длинная строка вредит чтению. */
+main:has(> .page-wide) { max-width: none; }
+
+.center { display: flex; min-height: 100%; align-items: center; justify-content: center; }
+
+/* ── cards / rows ───────────────────────────────────── */
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-1);
+}
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── toolbar ────────────────────────────────────────── */
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+
+/* ── tables ─────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+th { font-size: 12px; font-weight: 600; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--line-soft); }
+td.actions { white-space: nowrap; }
+.empty { padding: 40px; text-align: center; color: var(--ink-faint); }
+
+/* строка с флагами гейта, которая ещё требует решения — смотреть в первую
+   очередь; заливка без новых цветов. Не путать с .row (флекс-контейнер для
+   карточек/кнопок) — на <tr> он ломает табличную раскладку, поэтому у
+   подсветки свой независимый класс. */
+.row--flagged td { background: var(--accent-wash); }
+.row--flagged:hover td { background: var(--accent-wash); }
+
+/* саммари в свёрнутой строке — не больше трёх строк, иначе одна карточка
+   раздувает высоту всей таблицы; полный текст — в раскрытой строке. */
+.summary-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* информационное сообщение — не сбой, тон спокойнее error */
+.notice { color: var(--warn); font-size: 13.5px; margin-bottom: 12px; }
+
+/* ── status badges ──────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 550; padding: 3px 9px; border-radius: 999px;
+  background: var(--line-soft); color: var(--ink-soft);
+}
+.badge--done { background: #E7F6EC; color: #1E7A34; }
+.badge--warn { background: #FBF3DE; color: #92670A; }
+.badge--fail { background: #FDE7E7; color: #C0322F; }
+.badge--live { background: #FDE7E7; color: var(--live); }
+.badge--live .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--live);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+
+/* ── login ──────────────────────────────────────────── */
+.login-wrap { display: flex; min-height: 100%; align-items: center; justify-content: center; padding: 24px; }
+.login {
+  width: 340px; display: flex; flex-direction: column; gap: 13px;
+  padding: 28px; border-radius: var(--radius); background: var(--surface);
+  border: 1px solid var(--line); box-shadow: var(--shadow-2);
+}
+.login .brand { justify-content: center; padding: 0 0 6px; font-size: 20px; }
+.login h1 { text-align: center; font-size: 17px; font-weight: 550; color: var(--ink-soft); }
+.error { color: var(--live); font-size: 13.5px; }
+.field-label { font-size: 13px; color: var(--ink-soft); }
+
+/* ── transcript: channel-strip signature ────────────── */
+.transcript { display: flex; flex-direction: column; gap: 3px; }
+.turn {
+  display: grid; grid-template-columns: 64px 1fr; gap: 12px;
+  padding: 9px 12px 9px 10px; border-left: 3px solid var(--rail, var(--ink-faint));
+  background: var(--wash, transparent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.turn .meta { display: flex; flex-direction: column; gap: 2px; }
+.turn .ts { font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.turn .spk { font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--rail, var(--ink-soft)); }
+.turn .said { color: var(--ink); }
+.turn.flat { grid-template-columns: 1fr; border-left-color: var(--line); }
+.turn.flat .said { white-space: pre-wrap; }
+
+.spk-color-0 { --rail: var(--s0); --wash: color-mix(in srgb, var(--s0) 7%, transparent); }
+.spk-color-1 { --rail: var(--s1); --wash: color-mix(in srgb, var(--s1) 7%, transparent); }
+.spk-color-2 { --rail: var(--s2); --wash: color-mix(in srgb, var(--s2) 7%, transparent); }
+.spk-color-3 { --rail: var(--s3); --wash: color-mix(in srgb, var(--s3) 7%, transparent); }
+.spk-color-4 { --rail: var(--s4); --wash: color-mix(in srgb, var(--s4) 7%, transparent); }
+.spk-color-5 { --rail: var(--s5); --wash: color-mix(in srgb, var(--s5) 7%, transparent); }
+
+/* ── dropzone ───────────────────────────────────────── */
+.dropzone {
+  border: 2px dashed var(--line); border-radius: var(--radius); padding: 44px 24px;
+  text-align: center; background: var(--surface); cursor: pointer; transition: border-color .15s, background .15s;
+}
+.dropzone:hover { border-color: var(--ink-faint); }
+.dropzone.drag { border-color: var(--accent); background: var(--accent-wash); }
+.progress { height: 8px; border-radius: 999px; background: var(--line-soft); overflow: hidden; margin-top: 12px; }
+.progress > i { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+
+/* ── responsive ─────────────────────────────────────── */
+@media (max-width: 720px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--line); padding: 10px 14px; overflow-x: auto; }
+  .brand { padding: 0 12px 0 4px; }
+  .sidebar nav { flex-direction: row; }
+  .sidebar-foot { margin: 0 0 0 auto; padding: 0 0 0 12px; border: 0; display: flex; align-items: center; gap: 8px; }
+  .who { display: none; }
+  main { padding: 20px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-eq i, .badge--live .dot { animation: none; }
+}

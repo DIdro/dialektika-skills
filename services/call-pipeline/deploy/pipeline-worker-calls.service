@@ -1,0 +1,15 @@
+[Unit]
+Description=call-pipeline worker-calls (long calls with diarization)
+After=network.target
+
+[Service]
+Type=simple
+User=pipeline
+WorkingDirectory=/opt/call-pipeline/server
+EnvironmentFile=/etc/call-pipeline/env
+ExecStart=/opt/call-pipeline/server/.venv/bin/python -m app.workers.whisper_call
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
